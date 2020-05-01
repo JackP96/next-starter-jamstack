@@ -1,45 +1,47 @@
-import React from 'react'
 import Head from 'next/head'
+import Layout, { siteTitle } from '../components/layout'
+import utilStyles from '../styles/utils.module.css'
+import Link from 'next/link'
+import { getSortedPostsData } from '../lib/posts'
 
-const Home = () => (
-  <div>
-    <h1>Next.js on the [JAMstack](https://jamstack.org)</h1>
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData()
+  return {
+    props: {
+      allPostsData
+    }
+  }
+}
 
-    <h3>Hooray 🎉 - you've built this with <a href="https://nextjs.org">Next.js</a>!</h3>
-
-    <style jsx>{`
-      :global(html,body) {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-
-      :global(body) {
-        font-size: calc(10px + 1vmin);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-          'Droid Sans', 'Helvetica Neue', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background-color: #282c34;
-        color: white;
-      }
-
-      a {
-        color: pink;
-        text-decoration: none;
-      }
-
-      .content {
-        padding: 0 32px;
-      }
-    `}</style>
-  </div>
-)
-
-export default Home
+export default function Home({ allPostsData }) {
+  return (
+    <Layout home>
+      <Head>
+        <title>{siteTitle}</title>
+      </Head>
+      <section className={utilStyles.headingMd}>
+        <p>Hi, I'm Jack</p>
+        <p>
+         I've got quite a ways to go with this project. But not bad for the first night. <Link href="posts/first-post"><a>Check out my first page</a></Link>)
+        </p>
+      </section>
+      <section className={utilStyles.headingMd}>…</section>
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>My Blog</h2>
+        <ul className={utilStyles.list}>
+          {allPostsData.map(({ id, date, title }) => (
+            <div className={utilStyles.wrapper}>
+            <li className={utilStyles.listItem} key={id}>
+              <Link href={id} className={utilStyles.headingLg}><a>{title}</a></Link>
+              <br />
+              {id}
+              <br />
+              {date}
+            </li>
+            </div>
+          ))}
+        </ul>
+      </section>
+    </Layout>
+  )
+}
